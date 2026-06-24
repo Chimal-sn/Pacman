@@ -1,0 +1,34 @@
+@font-face {
+    font-family: 'prstar2p';
+    src: url(../fonts/prstartk.ttf) format('truetype');
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100dvh;
+    width: 100dvw;
+    background-color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+    img {
+        max-width: 800px;
+        height: auto;
+        width: 100%;
+    }
+
+    a {
+        text-decoration: none;
+        color: #fff;
+        font-family: 'prstar2p';
+        font-size: 1.5rem;
+    }
+}

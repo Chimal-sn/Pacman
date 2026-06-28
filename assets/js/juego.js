@@ -17,6 +17,23 @@ canvas.height = numeroFilas * tamañoCelda;
 let blink = true;
 let contadorFotogramas = 0;
 
+const pacman = {
+    posicionX: tamañoCelda * 2,
+    posicionY: tamañoCelda * 1,
+    tamañoRadio: 10,
+    direccion: '',
+
+    dibujar: function () {
+        ctx.beginPath();
+        let centroX = this.posicionX + tamañoCelda / 2;
+        let centroY = this.posicionY + tamañoCelda / 2;
+        ctx.arc(centroX, centroY, this.tamañoRadio, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffff00';
+        ctx.fill();
+        ctx.closePath();
+    }
+}
+
 function dibujarMapa() {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -32,8 +49,10 @@ function dibujarMapa() {
             const anguloFin = Math.PI * 2;
 
             if (tipo == 1) {
+                ctx.beginPath();
                 ctx.fillStyle = '#0e0e96';
                 ctx.fillRect(x, y, tamañoCelda, tamañoCelda);
+                ctx.closePath();
             } else if (tipo == 0) {
                 ctx.beginPath();
                 const radio = 2.5;
@@ -62,6 +81,7 @@ function animar() {
         contadorFotogramas = 0;
     }
     dibujarMapa();
+    pacman.dibujar();
     requestAnimationFrame(animar);
 }
 

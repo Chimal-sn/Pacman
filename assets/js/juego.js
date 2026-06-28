@@ -38,7 +38,7 @@ function dibujarMapa() {
                 ctx.beginPath();
                 const radio = 2.5;
                 ctx.arc(centroX, centroY, radio, anguloInicio, anguloFin);
-                ctx.fillStyle = '#ffb8ae';
+                ctx.fillStyle = '#ffff00';
                 ctx.fill();
                 ctx.closePath();
             } else if (tipo == 2) {
@@ -46,7 +46,7 @@ function dibujarMapa() {
                     ctx.beginPath();
                     const radio = 4;
                     ctx.arc(centroX, centroY, radio, anguloInicio, anguloFin);
-                    ctx.fillStyle = '#ffb8ae';
+                    ctx.fillStyle = '#ffff00';
                     ctx.fill();
                     ctx.closePath();
                 }

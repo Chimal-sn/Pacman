@@ -15,8 +15,12 @@ canvas.width = numeroColumnas * tamañoCelda;
 canvas.height = numeroFilas * tamañoCelda;
 
 let blink = true;
+let contadorFotogramas = 0;
 
 function dibujarMapa() {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     for (let fila = 0; fila < numeroFilas; fila++) {
         for (let columna = 0; columna < numeroColumnas; columna++) {
             const tipo = mapa[fila][columna];
@@ -51,4 +55,15 @@ function dibujarMapa() {
     }
 }
 
-dibujarMapa();
+function animar() {
+    contadorFotogramas += 1;
+    if (contadorFotogramas == 20) {
+        blink = !blink;
+        contadorFotogramas = 0;
+    }
+    dibujarMapa();
+    requestAnimationFrame(animar);
+}
+
+
+animar();

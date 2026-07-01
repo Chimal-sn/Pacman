@@ -67,7 +67,7 @@ function animar() {
         contadorFotogramas = 0;
     }
     dibujarMapa();
-    pacman.mover();
+    pacman.mover(mapa);
     pacman.dibujar(ctx, blink, tamañoCelda);
     requestAnimationFrame(animar);
 }
@@ -75,18 +75,18 @@ function animar() {
 animar();
 
 window.addEventListener('keydown', (evento) => {
-    switch (evento.key) {
-        case 'ArrowUp':
-            pacman.direccion = 'arriba';
-            break;
-        case 'ArrowDown':
-            pacman.direccion = 'abajo';
-            break;
-        case 'ArrowLeft':
-            pacman.direccion = 'izquierda';
-            break;
-        case 'ArrowRight':
-            pacman.direccion = 'derecha';
-            break;
+    if (evento.key === 'ArrowUp' || evento.key === 'W' || evento.key === 'w') {
+        pacman.direccion = 'arriba';
+    }
+    if (evento.key === 'ArrowDown' || evento.key === 'S' || evento.key === 's') {
+        pacman.direccion = 'abajo';
+    }
+    if (evento.key === 'ArrowLeft' || evento.key === 'A' || evento.key === 'a') {
+        pacman.direccion = 'izquierda';
+    }
+    if (evento.key === 'ArrowRight' || evento.key === 'D' || evento.key === 'd') {
+        pacman.direccion = 'derecha';
     }
 })
+
+

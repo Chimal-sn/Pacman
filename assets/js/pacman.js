@@ -7,7 +7,7 @@ export const pacman = {
     posicionX: 2,
     posicionY: 1,
     direccion: '',
-    velocidad: 0.01,
+    velocidad: 0.1,
 
     dibujar: function (ctx, blink, tamañoCelda) {
         if (blink) {
@@ -17,19 +17,35 @@ export const pacman = {
         }
     },
 
-    mover: function () {
+    mover: function (mapa) {
         switch (this.direccion) {
             case 'arriba':
-                this.posicionY -= this.velocidad;
+                const filaEntranteArriba = Math.floor(this.posicionY - this.velocidad)
+                const columnaEntranteArriba = Math.round(this.posicionX)
+                if (mapa[filaEntranteArriba][columnaEntranteArriba] != 1) {
+                    this.posicionY -= this.velocidad;
+                }
                 break;
             case 'abajo':
-                this.posicionY += this.velocidad;
+                const filaEntranteAbajo = Math.ceil(this.posicionY + this.velocidad)
+                const columnaEntranteAbajo = Math.round(this.posicionX)
+                if (mapa[filaEntranteAbajo][columnaEntranteAbajo] != 1) {
+                    this.posicionY += this.velocidad;
+                }
                 break;
             case 'izquierda':
-                this.posicionX -= this.velocidad;
+                const filaEntranteIzquierda = Math.round(this.posicionY)
+                const columnaEntranteIzquierda = Math.floor(this.posicionX - this.velocidad)
+                if (mapa[filaEntranteIzquierda][columnaEntranteIzquierda] != 1) {
+                    this.posicionX -= this.velocidad;
+                }
                 break;
             case 'derecha':
-                this.posicionX += this.velocidad;
+                const filaEntranteDerecha = Math.round(this.posicionY)
+                const columnaEntranteDerecha = Math.ceil(this.posicionX + this.velocidad)
+                if (mapa[filaEntranteDerecha][columnaEntranteDerecha] != 1) {
+                    this.posicionX += this.velocidad;
+                }
                 break;
         }
     }

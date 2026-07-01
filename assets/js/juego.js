@@ -67,9 +67,26 @@ function animar() {
         contadorFotogramas = 0;
     }
     dibujarMapa();
+    pacman.mover();
     pacman.dibujar(ctx, blink, tamañoCelda);
     requestAnimationFrame(animar);
 }
 
-
 animar();
+
+window.addEventListener('keydown', (evento) => {
+    switch (evento.key) {
+        case 'ArrowUp':
+            pacman.direccion = 'arriba';
+            break;
+        case 'ArrowDown':
+            pacman.direccion = 'abajo';
+            break;
+        case 'ArrowLeft':
+            pacman.direccion = 'izquierda';
+            break;
+        case 'ArrowRight':
+            pacman.direccion = 'derecha';
+            break;
+    }
+})

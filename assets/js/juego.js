@@ -76,16 +76,16 @@ animar();
 
 window.addEventListener('keydown', (evento) => {
     if (evento.key === 'ArrowUp' || evento.key === 'W' || evento.key === 'w') {
-        pacman.direccion = 'arriba';
+        pacman.direccionSiguiente = 'arriba';
     }
     if (evento.key === 'ArrowDown' || evento.key === 'S' || evento.key === 's') {
-        pacman.direccion = 'abajo';
+        pacman.direccionSiguiente = 'abajo';
     }
     if (evento.key === 'ArrowLeft' || evento.key === 'A' || evento.key === 'a') {
-        pacman.direccion = 'izquierda';
+        pacman.direccionSiguiente = 'izquierda';
     }
     if (evento.key === 'ArrowRight' || evento.key === 'D' || evento.key === 'd') {
-        pacman.direccion = 'derecha';
+        pacman.direccionSiguiente = 'derecha';
     }
 })
 

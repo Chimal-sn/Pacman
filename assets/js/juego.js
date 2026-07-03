@@ -7,6 +7,10 @@ const mapa = [
     [1, 1, 1, 1, 1]
 ];
 
+//1 = muro
+//0 = pastilla chica
+//2 = pastilal grande
+
 const canvas = document.getElementById('canvas-juego');
 const ctx = canvas.getContext('2d');
 const tamañoCelda = 24;
@@ -19,6 +23,7 @@ canvas.height = numeroFilas * tamañoCelda;
 let blink = true;
 let contadorFotogramas = 0;
 
+const marcador = document.getElementById('marcador');
 
 function dibujarMapa() {
     ctx.fillStyle = '#000';
@@ -67,13 +72,14 @@ function animar() {
         contadorFotogramas = 0;
     }
     dibujarMapa();
-    pacman.mover(mapa);
+    pacman.mover(mapa, marcador);
     pacman.dibujar(ctx, blink, tamañoCelda);
     requestAnimationFrame(animar);
 }
 
 animar();
 
+//Detectar movimiento del teclado
 window.addEventListener('keydown', (evento) => {
     if (evento.key === 'ArrowUp' || evento.key === 'W' || evento.key === 'w') {
         pacman.direccionSiguiente = 'arriba';

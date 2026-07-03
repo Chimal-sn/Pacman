@@ -9,6 +9,7 @@ export const pacman = {
     direccionActual: '',
     direccionSiguiente: '',
     velocidad: 0.05,
+    puntaje: 0,
 
     dibujar: function (ctx, blink, tamañoCelda) {
         if (blink) {
@@ -18,7 +19,7 @@ export const pacman = {
         }
     },
 
-    mover: function (mapa) {
+    mover: function (mapa, marcador) {
 
         const diferenciaX = Math.abs(this.posicionX - Math.round(this.posicionX));
         const diferenciaY = Math.abs(this.posicionY - Math.round(this.posicionY));
@@ -28,6 +29,8 @@ export const pacman = {
         if (diferenciaY < 0.01) {
             this.posicionY = Math.round(this.posicionY);
         }
+
+        this.comer(mapa, marcador);
 
         switch (this.direccionSiguiente) {
             case 'arriba':
@@ -88,6 +91,23 @@ export const pacman = {
                 if (mapa[filaEntranteDerecha][columnaEntranteDerecha] != 1) {
                     this.posicionX += this.velocidad;
                 }
+                break;
+        }
+    },
+
+    comer: function (mapa, marcador) {
+        const columna = Math.round(this.posicionX);
+        const fila = Math.round(this.posicionY);
+        switch (mapa[fila][columna]) {
+            case 0:
+                mapa[fila][columna] = 3;
+                this.puntaje += 10;
+                marcador.textContent = "Puntaje: " + this.puntaje;
+                break;
+            case 2:
+                mapa[fila][columna] = 3;
+                this.puntaje += 50;
+                marcador.textContent = "Puntaje: " + this.puntaje;
                 break;
         }
     }

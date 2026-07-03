@@ -10,12 +10,21 @@ export const pacman = {
     direccionSiguiente: '',
     velocidad: 0.05,
     puntaje: 0,
+    anguloBoca: 0,
 
     dibujar: function (ctx, blink, tamañoCelda) {
         if (blink) {
-            ctx.drawImage(pacman_open, this.posicionX * tamañoCelda, this.posicionY * tamañoCelda, tamañoCelda, tamañoCelda);
+            ctx.save();
+            ctx.translate(this.posicionX * tamañoCelda + tamañoCelda / 2, this.posicionY * tamañoCelda + tamañoCelda / 2);
+            ctx.rotate(this.anguloBoca);
+            ctx.drawImage(pacman_open, -tamañoCelda / 2, -tamañoCelda / 2, tamañoCelda, tamañoCelda);
+            ctx.restore();
         } else {
-            ctx.drawImage(pacman_closed, this.posicionX * tamañoCelda, this.posicionY * tamañoCelda, tamañoCelda, tamañoCelda);
+            ctx.save();
+            ctx.translate(this.posicionX * tamañoCelda + tamañoCelda / 2, this.posicionY * tamañoCelda + tamañoCelda / 2);
+            ctx.rotate(this.anguloBoca);
+            ctx.drawImage(pacman_closed, -tamañoCelda / 2, -tamañoCelda / 2, tamañoCelda, tamañoCelda);
+            ctx.restore();
         }
     },
 
@@ -34,14 +43,14 @@ export const pacman = {
 
         switch (this.direccionSiguiente) {
             case 'arriba':
-                const filaEntranteArriba = Math.floor(this.posicionY - this.velocidad)
+                const filaEntranteArriba = Math.floor((this.posicionY - this.velocidad) + 0.001)
                 const columnaEntranteArriba = Math.round(this.posicionX)
                 if ((mapa[filaEntranteArriba][columnaEntranteArriba] != 1) && (this.posicionX % 1 == 0)) {
                     this.direccionActual = 'arriba';
                 }
                 break;
             case 'abajo':
-                const filaEntranteAbajo = Math.ceil(this.posicionY + this.velocidad)
+                const filaEntranteAbajo = Math.ceil((this.posicionY + this.velocidad) - 0.001)
                 const columnaEntranteAbajo = Math.round(this.posicionX)
                 if ((mapa[filaEntranteAbajo][columnaEntranteAbajo] != 1) && (this.posicionX % 1 == 0)) {
                     this.direccionActual = 'abajo';
@@ -65,17 +74,19 @@ export const pacman = {
 
         switch (this.direccionActual) {
             case 'arriba':
-                const filaEntranteArriba = Math.floor(this.posicionY - this.velocidad)
+                const filaEntranteArriba = Math.floor((this.posicionY - this.velocidad) + 0.001)
                 const columnaEntranteArriba = Math.round(this.posicionX)
                 if (mapa[filaEntranteArriba][columnaEntranteArriba] != 1) {
                     this.posicionY -= this.velocidad;
+                    this.anguloBoca = -Math.PI / 2;
                 }
                 break;
             case 'abajo':
-                const filaEntranteAbajo = Math.ceil(this.posicionY + this.velocidad)
+                const filaEntranteAbajo = Math.ceil((this.posicionY + this.velocidad) - 0.001)
                 const columnaEntranteAbajo = Math.round(this.posicionX)
                 if (mapa[filaEntranteAbajo][columnaEntranteAbajo] != 1) {
                     this.posicionY += this.velocidad;
+                    this.anguloBoca = Math.PI / 2;
                 }
                 break;
             case 'izquierda':
@@ -83,6 +94,7 @@ export const pacman = {
                 const columnaEntranteIzquierda = Math.floor((this.posicionX - this.velocidad) + 0.001);
                 if (mapa[filaEntranteIzquierda][columnaEntranteIzquierda] != 1) {
                     this.posicionX -= this.velocidad;
+                    this.anguloBoca = Math.PI;
                 }
                 break;
             case 'derecha':
@@ -90,6 +102,7 @@ export const pacman = {
                 const columnaEntranteDerecha = Math.ceil((this.posicionX + this.velocidad) - 0.001);
                 if (mapa[filaEntranteDerecha][columnaEntranteDerecha] != 1) {
                     this.posicionX += this.velocidad;
+                    this.anguloBoca = 0;
                 }
                 break;
         }

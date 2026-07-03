@@ -49,7 +49,6 @@ export const pacman = {
                 const columnaEntranteIzquierda = Math.floor((this.posicionX - this.velocidad) + 0.001);
                 if (mapa[filaEntranteIzquierda][columnaEntranteIzquierda] != 1 && (this.posicionY % 1 == 0)) {
                     this.direccionActual = 'izquierda';
-                    console.log('cambia a izquierda');
                 }
                 break;
             case 'derecha':

@@ -20,6 +20,7 @@ body {
     padding: 20px;
     touch-action: none;
     overflow: hidden;
+    overscroll-behavior: none;
 
     img {
         max-width: 800px;

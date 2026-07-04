@@ -134,4 +134,41 @@ window.addEventListener('keydown', (evento) => {
     }
 })
 
+//Detectar touch en los celulares
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+window.addEventListener('touchstart', (evento) => {
+    touchStartX = evento.touches[0].clientX;
+    touchStartY = evento.touches[0].clientY;
+});
+
+window.addEventListener('touchend', (evento) => {
+
+    const touchEndX = evento.changedTouches[0].clientX;
+    const touchEndY = evento.changedTouches[0].clientY;
+
+    const diferenciaX = touchEndX - touchStartX;
+    const diferenciaY = touchEndY - touchStartY;
+
+    const limiteDeslizamiento = 30;
+
+    if (Math.abs(diferenciaX) > Math.abs(diferenciaY) && Math.abs(diferenciaX) > limiteDeslizamiento) {
+        if (diferenciaX > 0) {
+            pacman.direccionSiguiente = 'derecha';
+        } else {
+            pacman.direccionSiguiente = 'izquierda';
+        }
+    } else if (Math.abs(diferenciaY) > Math.abs(diferenciaX) && Math.abs(diferenciaY) > limiteDeslizamiento) {
+        if (diferenciaY > 0) {
+            pacman.direccionSiguiente = 'abajo';
+        } else {
+            pacman.direccionSiguiente = 'arriba';
+        }
+    }
+
+});
+
+
 

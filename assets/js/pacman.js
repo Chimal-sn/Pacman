@@ -8,7 +8,7 @@ export const pacman = {
     posicionY: 1,
     direccionActual: '',
     direccionSiguiente: '',
-    velocidad: 0.05,
+    velocidad: 0.1,
     puntaje: 0,
     anguloBoca: 0,
 

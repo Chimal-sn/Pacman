@@ -7,8 +7,6 @@ export const fantasma = {
     direccionSiguiente: '',
     angulo: 0,
 
-    colores: ['#ff0000', '#00ffff', '#ffcc00', '#9400d3'],
-
     dibujar: function (ctx, tamañoCelda, colores) {
 
     }

@@ -18,6 +18,8 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    touch-action: none;
+    overflow: hidden;
 
     img {
         max-width: 800px;

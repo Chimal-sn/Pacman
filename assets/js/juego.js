@@ -1,13 +1,28 @@
 import { pacman } from "./pacman.js";
 
 const mapa = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 2, 0, 0, 0, 0, 2, 1],
-    [1, 1, 1, 0, 1, 0, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 0, 1, 0, 1, 0, 1],
-    [1, 0, 2, 0, 0, 0, 0, 2, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1]
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 2, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2, 1],
+    [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
+    [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 0, 1, 1, 1, 3, 1, 3, 1, 1, 1, 0, 1, 1, 1, 1],
+    [3, 3, 3, 1, 0, 1, 3, 3, 3, 3, 3, 3, 3, 1, 0, 1, 3, 3, 3],
+    [1, 1, 1, 1, 0, 1, 3, 1, 1, 3, 1, 1, 3, 1, 0, 1, 1, 1, 1],
+    [3, 3, 3, 3, 0, 3, 3, 1, 3, 3, 3, 1, 3, 3, 0, 3, 3, 3, 3],
+    [1, 1, 1, 1, 0, 1, 3, 1, 1, 1, 1, 1, 3, 1, 0, 1, 1, 1, 1],
+    [3, 3, 3, 1, 0, 1, 3, 3, 3, 3, 3, 3, 3, 1, 0, 1, 3, 3, 3],
+    [1, 1, 1, 1, 0, 1, 3, 1, 1, 1, 1, 1, 3, 1, 0, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 2, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 2, 1],
+    [1, 0, 0, 1, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+    [1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1],
+    [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ];
 
 //1 = muro
@@ -19,6 +34,7 @@ const ctx = canvas.getContext('2d');
 const tamañoCelda = 24;
 const numeroFilas = mapa.length;
 const numeroColumnas = mapa[0].length;
+const tamañoPared = 22;
 
 canvas.width = numeroColumnas * tamañoCelda;
 canvas.height = numeroFilas * tamañoCelda;
@@ -43,9 +59,29 @@ function dibujarMapa() {
             const anguloFin = Math.PI * 2;
 
             if (tipo == 1) {
+                const grosor = 10;
                 ctx.beginPath();
                 ctx.fillStyle = '#0e0e96';
-                ctx.fillRect(x, y, tamañoCelda, tamañoCelda);
+
+                // Dibujar el bloque del centro de la celda
+                ctx.fillRect(centroX - grosor / 2, centroY - grosor / 2, grosor, grosor);
+
+                // Si hay pared arriba, estirar brazo hacia arriba
+                if (fila > 0 && mapa[fila - 1][columna] == 1) {
+                    ctx.fillRect(centroX - grosor / 2, y, grosor, tamañoCelda / 2);
+                }
+                // Si hay pared abajo, estirar brazo hacia abajo
+                if (fila < numeroFilas - 1 && mapa[fila + 1][columna] == 1) {
+                    ctx.fillRect(centroX - grosor / 2, centroY, grosor, tamañoCelda / 2);
+                }
+                // Si hay pared a la izquierda, estirar brazo a la izquierda
+                if (columna > 0 && mapa[fila][columna - 1] == 1) {
+                    ctx.fillRect(x, centroY - grosor / 2, tamañoCelda / 2, grosor);
+                }
+                // Si hay pared a la derecha, estirar brazo a la derecha
+                if (columna < numeroColumnas - 1 && mapa[fila][columna + 1] == 1) {
+                    ctx.fillRect(centroX, centroY - grosor / 2, tamañoCelda / 2, grosor);
+                }
                 ctx.closePath();
             } else if (tipo == 0) {
                 ctx.beginPath();

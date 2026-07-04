@@ -172,8 +172,6 @@ window.addEventListener('touchend', (evento) => {
     }
 }, { passive: false });
 
-
-
 window.addEventListener('touchmove', (evento) => {
     evento.preventDefault();
 }, { passive: false });

@@ -105,16 +105,26 @@ function dibujarMapa() {
     }
 }
 
-function animar() {
-    contadorFotogramas += 1;
-    if (contadorFotogramas == 20) {
-        blink = !blink;
-        contadorFotogramas = 0;
-    }
-    dibujarMapa();
-    pacman.mover(mapa, marcador);
-    pacman.dibujar(ctx, blink, tamañoCelda);
+let ultimoTiempo = 0;
+const fpsObjetivo = 60;
+const intervaloFps = 1000 / fpsObjetivo; // ~16.67 milisegundos
+
+function animar(timestamp) {
     requestAnimationFrame(animar);
+    if (!timestamp) timestamp = performance.now();
+    const tiempoTranscurrido = timestamp - ultimoTiempo;
+    if (tiempoTranscurrido >= intervaloFps) {
+        ultimoTiempo = timestamp - (tiempoTranscurrido % intervaloFps);
+        contadorFotogramas += 1;
+        if (contadorFotogramas == 20) {
+            blink = !blink;
+            contadorFotogramas = 0;
+        }
+        dibujarMapa();
+        pacman.mover(mapa, marcador);
+        pacman.dibujar(ctx, blink, tamañoCelda);
+    }
+
 }
 
 animar();

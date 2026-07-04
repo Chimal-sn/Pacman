@@ -21,6 +21,10 @@ body {
     touch-action: none;
     overflow: hidden;
     overscroll-behavior: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 
     img {
         max-width: 800px;

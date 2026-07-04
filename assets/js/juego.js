@@ -1,4 +1,5 @@
 import { pacman } from "./pacman.js";
+import { fantasma } from "./fantasma.js";
 
 const mapa = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -140,11 +141,13 @@ let touchStartX = 0;
 let touchStartY = 0;
 
 window.addEventListener('touchstart', (evento) => {
+    evento.preventDefault();
     touchStartX = evento.touches[0].clientX;
     touchStartY = evento.touches[0].clientY;
-});
+}, { passive: false });
 
 window.addEventListener('touchend', (evento) => {
+    evento.preventDefault();
 
     const touchEndX = evento.changedTouches[0].clientX;
     const touchEndY = evento.changedTouches[0].clientY;
@@ -167,7 +170,7 @@ window.addEventListener('touchend', (evento) => {
             pacman.direccionSiguiente = 'arriba';
         }
     }
-});
+}, { passive: false });
 
 
 

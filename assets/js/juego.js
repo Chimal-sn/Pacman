@@ -167,8 +167,11 @@ window.addEventListener('touchend', (evento) => {
             pacman.direccionSiguiente = 'arriba';
         }
     }
-
 });
 
 
+
+window.addEventListener('touchmove', (evento) => {
+    evento.preventDefault();
+}, { passive: false });
 

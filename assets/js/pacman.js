@@ -30,6 +30,10 @@ export const pacman = {
 
     mover: function (mapa, marcador) {
 
+        //Detectar si pacman sale de los limites del mapa
+        if (this.posicionX < 0) this.posicionX = mapa[0].length - 1;
+        if (this.posicionX > mapa[0].length - 1) this.posicionX = 0;
+
         const diferenciaX = Math.abs(this.posicionX - Math.round(this.posicionX));
         const diferenciaY = Math.abs(this.posicionY - Math.round(this.posicionY));
         if (diferenciaX < 0.01) {

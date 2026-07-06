@@ -132,3 +132,32 @@ export class Blinky extends Fantasma {
         super(x, y, velocidad, 'assets/svg/blinky.svg');
     }
 }
+
+export class Pinky extends Fantasma {
+    constructor(x, y, velocidad) {
+        super(x, y, velocidad, 'assets/svg/pinky.svg');
+    }
+
+    obtenerObjetivo(pacman) {
+
+        let filaObjetivo = pacman.posicionY;
+        let columnaObjetivo = pacman.posicionX;
+
+        switch (pacman.direccionActual) {
+            case 'arriba':
+                filaObjetivo -= 4;
+                break;
+            case 'abajo':
+                filaObjetivo += 4;
+                break;
+            case 'izquierda':
+                columnaObjetivo -= 4;
+                break;
+            case 'derecha':
+                columnaObjetivo += 4;
+                break;
+        }
+
+        return [filaObjetivo, columnaObjetivo];
+    }
+}

@@ -1,5 +1,5 @@
 import { pacman } from "./pacman.js";
-import { Blinky } from "./fantasma.js";
+import { Blinky, Pinky } from "./fantasma.js";
 
 const mapa = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -112,6 +112,7 @@ const intervaloFps = 1000 / fpsObjetivo;
 
 //Fantasma blinky
 const blinky = new Blinky(9, 8, 0.1);
+const pinky = new Pinky(9, 8, 0.1);
 
 function animar(timestamp) {
     requestAnimationFrame(animar);
@@ -133,6 +134,11 @@ function animar(timestamp) {
         //Fantasma blinky
         blinky.mover(mapa, pacman);
         blinky.dibujar(ctx, tamañoCelda);
+
+        //Fantasma pinky
+        pinky.mover(mapa, pacman);
+        pinky.dibujar(ctx, tamañoCelda);
+
     }
 
 }

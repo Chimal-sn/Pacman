@@ -1,5 +1,5 @@
 import { pacman } from "./pacman.js";
-import { fantasma } from "./fantasma.js";
+import { Blinky } from "./fantasma.js";
 
 const mapa = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -29,6 +29,7 @@ const mapa = [
 //1 = muro
 //0 = pastilla chica
 //2 = pastilal grande
+//3 = Espacio libre
 
 const canvas = document.getElementById('canvas-juego');
 const ctx = canvas.getContext('2d');
@@ -107,7 +108,10 @@ function dibujarMapa() {
 
 let ultimoTiempo = 0;
 const fpsObjetivo = 60;
-const intervaloFps = 1000 / fpsObjetivo; // ~16.67 milisegundos
+const intervaloFps = 1000 / fpsObjetivo;
+
+//Fantasma blinky
+const blinky = new Blinky(9, 8, 0.5);
 
 function animar(timestamp) {
     requestAnimationFrame(animar);
@@ -121,8 +125,14 @@ function animar(timestamp) {
             contadorFotogramas = 0;
         }
         dibujarMapa();
+
+        //Pacman
         pacman.mover(mapa, marcador);
         pacman.dibujar(ctx, blink, tamañoCelda);
+
+        //Fantasma blinky
+        blinky.mover(mapa);
+        blinky.dibujar(ctx, tamañoCelda);
     }
 
 }

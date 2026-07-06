@@ -111,7 +111,7 @@ const fpsObjetivo = 60;
 const intervaloFps = 1000 / fpsObjetivo;
 
 //Fantasma blinky
-const blinky = new Blinky(9, 8, 0.5);
+const blinky = new Blinky(9, 8, 0.1);
 
 function animar(timestamp) {
     requestAnimationFrame(animar);
@@ -131,7 +131,7 @@ function animar(timestamp) {
         pacman.dibujar(ctx, blink, tamañoCelda);
 
         //Fantasma blinky
-        blinky.mover(mapa);
+        blinky.mover(mapa, pacman);
         blinky.dibujar(ctx, tamañoCelda);
     }
 

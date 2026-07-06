@@ -161,3 +161,23 @@ export class Pinky extends Fantasma {
         return [filaObjetivo, columnaObjetivo];
     }
 }
+
+
+export class Clyde extends Fantasma {
+    constructor(x, y, velocidad) {
+        super(x, y, velocidad, 'assets/svg/clyde.svg');
+    }
+
+    obtenerObjetivo(pacman) {
+        let dx = this.posicionX - pacman.posicionX;
+        let dy = this.posicionY - pacman.posicionY;
+
+        let distancia = Math.sqrt(dx * dx + dy * dy);
+
+        if (distancia > 8) {
+            return [Math.round(pacman.posicionY), Math.round(pacman.posicionX)];
+        } else if (distancia <= 8) {
+            return [20, 0];
+        }
+    }
+}

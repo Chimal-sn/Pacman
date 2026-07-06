@@ -1,5 +1,5 @@
 import { pacman } from "./pacman.js";
-import { Blinky, Pinky, Clyde } from "./fantasma.js";
+import { Blinky, Pinky, Clyde, Inky } from "./fantasma.js";
 
 const mapa = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -11,7 +11,7 @@ const mapa = [
     [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 0, 1, 1, 1, 3, 1, 3, 1, 1, 1, 0, 1, 1, 1, 1],
     [3, 3, 3, 1, 0, 1, 3, 3, 3, 3, 3, 3, 3, 1, 0, 1, 3, 3, 3],
-    [1, 1, 1, 1, 0, 1, 3, 1, 1, 3, 1, 1, 3, 1, 0, 1, 1, 1, 1],
+    [1, 1, 1, 1, 0, 1, 3, 1, 1, 4, 1, 1, 3, 1, 0, 1, 1, 1, 1],
     [3, 3, 3, 3, 0, 3, 3, 1, 3, 3, 3, 1, 3, 3, 0, 3, 3, 3, 3],
     [1, 1, 1, 1, 0, 1, 3, 1, 1, 1, 1, 1, 3, 1, 0, 1, 1, 1, 1],
     [3, 3, 3, 1, 0, 1, 3, 3, 3, 3, 3, 3, 3, 1, 0, 1, 3, 3, 3],
@@ -26,10 +26,13 @@ const mapa = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ];
 
+
+
 //1 = muro
 //0 = pastilla chica
 //2 = pastilal grande
 //3 = Espacio libre
+//4 = Entrada a la casa
 
 const canvas = document.getElementById('canvas-juego');
 const ctx = canvas.getContext('2d');
@@ -101,6 +104,22 @@ function dibujarMapa() {
                     ctx.fill();
                     ctx.closePath();
                 }
+            } else if (tipo == 4) {
+                const grosor = 10;
+                ctx.beginPath();
+                ctx.fillStyle = '#b2bbbeff';
+
+                // Dibujar el bloque del centro de la celda
+                ctx.fillRect(centroX - grosor / 2, centroY - grosor / 2, grosor, grosor);
+
+                if (columna > 0 && mapa[fila][columna - 1] == 1) {
+                    ctx.fillRect(x, centroY - grosor / 2, tamañoCelda / 2, grosor);
+                }
+                // Si hay pared a la derecha, estirar brazo a la derecha
+                if (columna < numeroColumnas - 1 && mapa[fila][columna + 1] == 1) {
+                    ctx.fillRect(centroX, centroY - grosor / 2, tamañoCelda / 2, grosor);
+                }
+                ctx.closePath();
             }
         }
     }
@@ -111,11 +130,13 @@ const fpsObjetivo = 60;
 const intervaloFps = 1000 / fpsObjetivo;
 
 //Fantasma blinky
-const blinky = new Blinky(9, 8, 0.1);
+const blinky = new Blinky(8, 10, 0.1);
 //Fantasma pinky
-const pinky = new Pinky(9, 8, 0.1);
+const pinky = new Pinky(8, 10, 0.1);
 //Fantasma clyde
-const clyde = new Clyde(9, 8, 0.1);
+const clyde = new Clyde(8, 10, 0.1);
+//Fantasma inky
+const inky = new Inky(8, 10, 0.1);
 
 function animar(timestamp) {
     requestAnimationFrame(animar);
@@ -145,6 +166,10 @@ function animar(timestamp) {
         //Fantasma clyde
         clyde.mover(mapa, pacman);
         clyde.dibujar(ctx, tamañoCelda);
+
+        //Fantasma inky
+        inky.mover(mapa, pacman, blinky);
+        inky.dibujar(ctx, tamañoCelda);
 
     }
 

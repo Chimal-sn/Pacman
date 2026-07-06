@@ -4,7 +4,7 @@ export class Fantasma {
         this.posicionY = y;
         this.velocidad = velocidad;
         this.direccionActual = 'izquierda';
-        this.direccionProhibida = 'derecha';
+        this.direccionProhibida = '';
 
         // Cargamos la imagen correspondiente
         this.imagen = new Image();
@@ -16,7 +16,7 @@ export class Fantasma {
         ctx.drawImage(this.imagen, this.posicionX * tamañoCelda, this.posicionY * tamañoCelda, tamañoCelda, tamañoCelda);
     }
 
-    mover(mapa, pacman) {
+    mover(mapa, pacman, blinky) {
 
         //Detectar si un fantasma sale de los limites del mapa
         if (this.posicionX < 0) this.posicionX = mapa[0].length - 1;
@@ -32,9 +32,16 @@ export class Fantasma {
             this.posicionY = Math.round(this.posicionY);
         }
 
+
         if (this.posicionX % 1 == 0 && this.posicionY % 1 == 0) {
-            const objetivo = this.obtenerObjetivo(pacman)
-            this.decidirDireccion(mapa, objetivo)
+
+            let objetivo = [];
+            if (this.posicionY == 10 && (this.posicionX == 8 || this.posicionX == 9 || this.posicionX == 10)) {
+                objetivo = [8, 9];
+            } else {
+                objetivo = this.obtenerObjetivo(pacman, blinky);
+            }
+            this.decidirDireccion(mapa, objetivo);
         }
 
 
@@ -90,6 +97,7 @@ export class Fantasma {
         opciones.forEach(opcion => {
             if (opcion.direccion == this.direccionProhibida) return;
             if (mapa[opcion.filaDestino][opcion.columnaDestino] == 1) return;
+            if ((mapa[opcion.filaDestino][opcion.columnaDestino] == 4) && y < 10) return;
 
             const diferenciaX = opcion.columnaDestino - objetivo[1];
             const diferenciaY = opcion.filaDestino - objetivo[0];
@@ -179,5 +187,41 @@ export class Clyde extends Fantasma {
         } else if (distancia <= 8) {
             return [20, 0];
         }
+    }
+}
+
+export class Inky extends Fantasma {
+    constructor(x, y, velocidad) {
+        super(x, y, velocidad, 'assets/svg/inky.svg');
+    }
+
+    obtenerObjetivo(pacman, blinky) {
+
+        let filaPacman = Math.round(pacman.posicionY);
+        let columnaPacman = Math.round(pacman.posicionX);
+        const filaBlinky = Math.round(blinky.posicionY);
+        const columnaBlinky = Math.round(blinky.posicionX);
+
+
+        switch (pacman.direccionActual) {
+            case 'arriba':
+                filaPacman -= 2;
+                break;
+            case 'abajo':
+                filaPacman += 2;
+                break;
+            case 'izquierda':
+                columnaPacman -= 2;
+                break;
+            case 'derecha':
+                columnaPacman += 2;
+                break;
+        }
+
+        let filaObjetivo = filaPacman + (filaPacman - filaBlinky);
+        let columnaObjetivo = columnaPacman + (columnaPacman - columnaBlinky);
+
+        return [filaObjetivo, columnaObjetivo];
+
     }
 }

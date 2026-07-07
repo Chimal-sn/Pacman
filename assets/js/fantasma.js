@@ -1,11 +1,12 @@
 export class Fantasma {
-    constructor(x, y, velocidad, rutaImagen, esquinaPatrulla) {
+    constructor(x, y, velocidad, rutaImagen, esquinaPatrulla, retrasoSalida) {
         this.posicionX = x;
         this.posicionY = y;
         this.velocidad = velocidad;
         this.direccionActual = 'izquierda';
         this.direccionProhibida = '';
         this.esquinaPatrulla = esquinaPatrulla;
+        this.retrasoSalida = retrasoSalida;
 
         // Cargamos la imagen correspondiente
         this.imagen = new Image();
@@ -19,6 +20,10 @@ export class Fantasma {
 
     mover(mapa, pacman, blinky, modoFantasma) {
 
+        if (this.retrasoSalida > 0) {
+            this.retrasoSalida--;
+        }
+
         //Detectar si un fantasma sale de los limites del mapa
         if (this.posicionX < 0) this.posicionX = mapa[0].length - 1;
         if (this.posicionX > mapa[0].length - 1) this.posicionX = 0;
@@ -26,18 +31,36 @@ export class Fantasma {
         const diferenciaX = Math.abs(this.posicionX - Math.round(this.posicionX));
         const diferenciaY = Math.abs(this.posicionY - Math.round(this.posicionY));
 
-        if (diferenciaX < 0.01) {
+        const tolerancia = (this.velocidad / 2) + 0.005;
+
+        if (diferenciaX <= tolerancia) {
             this.posicionX = Math.round(this.posicionX);
         }
-        if (diferenciaY < 0.01) {
+        if (diferenciaY <= tolerancia) {
             this.posicionY = Math.round(this.posicionY);
         }
 
 
         if (this.posicionX % 1 == 0 && this.posicionY % 1 == 0) {
-
             let objetivo = [];
-            if (this.posicionY == 10 && (this.posicionX == 8 || this.posicionX == 9 || this.posicionX == 10)) {
+
+            if (this.retrasoSalida > 0) {
+                if (this.direccionActual == 'derecha') {
+                    if (mapa[this.posicionY][this.posicionX + 1] == 1) {
+                        objetivo = [10, 8];
+
+                    } else {
+                        objetivo = [10, 10];
+                    }
+                }
+                if (this.direccionActual == 'izquierda') {
+                    if (mapa[this.posicionY][this.posicionX - 1] == 1) {
+                        objetivo = [10, 10];
+                    } else {
+                        objetivo = [10, 8];
+                    }
+                }
+            } else if (this.posicionY == 10 && (this.posicionX == 8 || this.posicionX == 9 || this.posicionX == 10)) {
                 objetivo = [8, 9];
             } else if (modoFantasma == 'dispersar') {
                 objetivo = this.esquinaPatrulla;
@@ -114,6 +137,22 @@ export class Fantasma {
 
         });
 
+        if (menorDistancia == Infinity) {
+            opciones.forEach(opcion => {
+                if (mapa[opcion.filaDestino][opcion.columnaDestino] == 1) return;
+
+                const diferenciaX = opcion.columnaDestino - objetivo[1];
+                const diferenciaY = opcion.filaDestino - objetivo[0];
+                const distancia = diferenciaX * diferenciaX + diferenciaY * diferenciaY;
+
+                if (distancia < menorDistancia) {
+                    menorDistancia = distancia;
+                    mejorDireccion = opcion.direccion;
+                }
+            });
+        }
+
+
         this.direccionActual = mejorDireccion;
 
         if (this.direccionActual == 'arriba') {
@@ -139,14 +178,14 @@ export class Fantasma {
 }
 
 export class Blinky extends Fantasma {
-    constructor(x, y, velocidad) {
-        super(x, y, velocidad, 'assets/svg/blinky.svg', [1, 17]);
+    constructor(x, y, velocidad, retrasoSalida) {
+        super(x, y, velocidad, 'assets/svg/blinky.svg', [1, 17], retrasoSalida);
     }
 }
 
 export class Pinky extends Fantasma {
-    constructor(x, y, velocidad) {
-        super(x, y, velocidad, 'assets/svg/pinky.svg', [1, 1]);
+    constructor(x, y, velocidad, retrasoSalida) {
+        super(x, y, velocidad, 'assets/svg/pinky.svg', [1, 1], retrasoSalida);
     }
 
     obtenerObjetivo(pacman) {
@@ -175,8 +214,8 @@ export class Pinky extends Fantasma {
 
 
 export class Clyde extends Fantasma {
-    constructor(x, y, velocidad) {
-        super(x, y, velocidad, 'assets/svg/clyde.svg', [20, 1]);
+    constructor(x, y, velocidad, retrasoSalida) {
+        super(x, y, velocidad, 'assets/svg/clyde.svg', [20, 1], retrasoSalida);
     }
 
     obtenerObjetivo(pacman) {
@@ -194,8 +233,8 @@ export class Clyde extends Fantasma {
 }
 
 export class Inky extends Fantasma {
-    constructor(x, y, velocidad) {
-        super(x, y, velocidad, 'assets/svg/inky.svg', [20, 17]);
+    constructor(x, y, velocidad, retrasoSalida) {
+        super(x, y, velocidad, 'assets/svg/inky.svg', [20, 17], retrasoSalida);
     }
 
     obtenerObjetivo(pacman, blinky) {

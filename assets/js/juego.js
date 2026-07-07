@@ -138,24 +138,22 @@ setInterval(() => {
     if (modoFantasmas == 'dispersar' && contadorModo == 7) {
         modoFantasmas = 'caza';
         contadorModo = 0;
-        console.log('caza');
     }
-    if (modoFantasmas == 'caza' && contadorModo == 20) {
+    if (modoFantasmas == 'caza' && contadorModo == 15) {
         modoFantasmas = 'dispersar';
         contadorModo = 0;
-        console.log('dispersar');
     }
 }, 1000);
 
 
 //Fantasma blinky
-const blinky = new Blinky(8, 10, 0.1);
+const blinky = new Blinky(8, 10, 0.08, 0);
 //Fantasma pinky
-const pinky = new Pinky(8, 10, 0.1);
+const pinky = new Pinky(8, 10, 0.08, 180);
 //Fantasma clyde
-const clyde = new Clyde(8, 10, 0.1);
+const clyde = new Clyde(8, 10, 0.08, 360);
 //Fantasma inky
-const inky = new Inky(8, 10, 0.1);
+const inky = new Inky(8, 10, 0.08, 540);
 
 function animar(timestamp) {
     requestAnimationFrame(animar);

@@ -2,11 +2,13 @@ export class Fantasma {
     constructor(x, y, velocidad, rutaImagen, esquinaPatrulla, retrasoSalida) {
         this.posicionX = x;
         this.posicionY = y;
+        this.velocidadOriginal = velocidad;
         this.velocidad = velocidad;
         this.direccionActual = 'izquierda';
         this.direccionProhibida = '';
         this.esquinaPatrulla = esquinaPatrulla;
         this.retrasoSalida = retrasoSalida;
+        this.muerto = false;
 
         // Cargamos la imagen correspondiente
         this.imagen = new Image();
@@ -15,13 +17,17 @@ export class Fantasma {
         this.imagenAsustado = new Image();
         this.imagenAsustado.src = 'assets/svg/asustado.svg';
 
+        this.imagenMuerto = new Image();
+        this.imagenMuerto.src = 'assets/svg/ojos.svg';
+
     }
 
     dibujar(ctx, tamañoCelda, modoFantasma) {
 
-        if (modoFantasma == 'asustado') {
+        if (this.muerto) {
+            ctx.drawImage(this.imagenMuerto, this.posicionX * tamañoCelda, this.posicionY * tamañoCelda, tamañoCelda, tamañoCelda);
+        } else if (modoFantasma == 'asustado') {
             ctx.drawImage(this.imagenAsustado, this.posicionX * tamañoCelda, this.posicionY * tamañoCelda, tamañoCelda, tamañoCelda);
-
         } else {
             ctx.drawImage(this.imagen, this.posicionX * tamañoCelda, this.posicionY * tamañoCelda, tamañoCelda, tamañoCelda);
         }
@@ -51,6 +57,8 @@ export class Fantasma {
 
 
         if (this.posicionX % 1 == 0 && this.posicionY % 1 == 0) {
+
+
             let objetivo = [];
 
             if (this.retrasoSalida > 0) {
@@ -70,12 +78,23 @@ export class Fantasma {
                     }
                 }
             } else if (this.posicionY == 10 && (this.posicionX == 8 || this.posicionX == 9 || this.posicionX == 10)) {
-                objetivo = [8, 9];
+                if (this.muerto) {
+                    this.velocidad = this.velocidadOriginal;
+                    this.muerto = false;
+                    this.retrasoSalida = 180;
+                    objetivo = [10, 10];
+                } else {
+                    objetivo = [8, 9];
+                }
+            } else if (this.muerto) {
+                //this.velocidad = 0.1;
+                objetivo = [10, 8];
             } else if (modoFantasma == 'dispersar') {
                 objetivo = this.esquinaPatrulla;
             } else {
                 objetivo = this.obtenerObjetivo(pacman, blinky);
             }
+
             this.decidirDireccion(mapa, objetivo, modoFantasma);
         }
 
@@ -130,7 +149,7 @@ export class Fantasma {
             { direccion: 'derecha', columnaDestino: x + 1, filaDestino: y }
         ];
 
-        if (modoFantasma == 'asustado') {
+        if (modoFantasma == 'asustado' && !this.muerto && this.retrasoSalida <= 0) {
 
             let opcionesValidas = [];
 
@@ -143,12 +162,18 @@ export class Fantasma {
 
             if (opcionesValidas.length > 0) {
                 mejorDireccion = opcionesValidas[Math.floor(Math.random() * opcionesValidas.length)].direccion;
+            } else {
+                opciones.forEach(opcion => {
+                    if (mapa[opcion.filaDestino][opcion.columnaDestino] == 1) return;
+                    opcionesValidas.push(opcion);
+                });
+                mejorDireccion = opcionesValidas[Math.floor(Math.random() * opcionesValidas.length)].direccion;
             }
         } else {
             opciones.forEach(opcion => {
                 if (opcion.direccion == this.direccionProhibida) return;
                 if (mapa[opcion.filaDestino][opcion.columnaDestino] == 1) return;
-                if ((mapa[opcion.filaDestino][opcion.columnaDestino] == 4) && y < 10) return;
+                if ((mapa[opcion.filaDestino][opcion.columnaDestino] == 4) && y < 10 && !this.muerto) return;
 
                 const diferenciaX = opcion.columnaDestino - objetivo[1];
                 const diferenciaY = opcion.filaDestino - objetivo[0];

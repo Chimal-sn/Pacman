@@ -166,8 +166,30 @@ const clyde = new Clyde(8, 10, 0.08, 360);
 //Fantasma inky
 const inky = new Inky(8, 10, 0.08, 540);
 
+function verificarColisiones() {
+    const fantasmas = [blinky, pinky, clyde, inky];
+
+    for (let fantasma of fantasmas) {
+        if (fantasma.muerto) continue;
+        const distanciaX = Math.abs(fantasma.posicionX - pacman.posicionX);
+        const distanciaY = Math.abs(fantasma.posicionY - pacman.posicionY);
+        const distanciaMinima = 0.5;
+        if (distanciaX <= distanciaMinima && distanciaY <= distanciaMinima) {
+
+            if (modoFantasmas == 'asustado') {
+                fantasma.muerto = true;
+            } else {
+                if (pacman.vidas > 0) {
+                    pacman.vidas--;
+                }
+            }
+        }
+    }
+}
+
 function animar(timestamp) {
     requestAnimationFrame(animar);
+    verificarColisiones();
     if (!timestamp) timestamp = performance.now();
     const tiempoTranscurrido = timestamp - ultimoTiempo;
     if (tiempoTranscurrido >= intervaloFps) {
@@ -208,8 +230,6 @@ function animar(timestamp) {
         //Fantasma inky
         inky.mover(mapa, pacman, blinky, modoFantasmas);
         inky.dibujar(ctx, tamañoCelda, modoFantasmas);
-
-        console.log(modoFantasmas);
 
     }
 

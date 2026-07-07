@@ -129,6 +129,25 @@ let ultimoTiempo = 0;
 const fpsObjetivo = 60;
 const intervaloFps = 1000 / fpsObjetivo;
 
+
+let modoFantasmas = 'dispersar';
+let contadorModo = 0;
+
+setInterval(() => {
+    contadorModo++;
+    if (modoFantasmas == 'dispersar' && contadorModo == 7) {
+        modoFantasmas = 'caza';
+        contadorModo = 0;
+        console.log('caza');
+    }
+    if (modoFantasmas == 'caza' && contadorModo == 20) {
+        modoFantasmas = 'dispersar';
+        contadorModo = 0;
+        console.log('dispersar');
+    }
+}, 1000);
+
+
 //Fantasma blinky
 const blinky = new Blinky(8, 10, 0.1);
 //Fantasma pinky
@@ -156,19 +175,19 @@ function animar(timestamp) {
         pacman.dibujar(ctx, blink, tamañoCelda);
 
         //Fantasma blinky
-        blinky.mover(mapa, pacman);
+        blinky.mover(mapa, pacman, null, modoFantasmas);
         blinky.dibujar(ctx, tamañoCelda);
 
         //Fantasma pinky
-        pinky.mover(mapa, pacman);
+        pinky.mover(mapa, pacman, null, modoFantasmas);
         pinky.dibujar(ctx, tamañoCelda);
 
         //Fantasma clyde
-        clyde.mover(mapa, pacman);
+        clyde.mover(mapa, pacman, null, modoFantasmas);
         clyde.dibujar(ctx, tamañoCelda);
 
         //Fantasma inky
-        inky.mover(mapa, pacman, blinky);
+        inky.mover(mapa, pacman, blinky, modoFantasmas);
         inky.dibujar(ctx, tamañoCelda);
 
     }

@@ -11,11 +11,20 @@ export class Fantasma {
         // Cargamos la imagen correspondiente
         this.imagen = new Image();
         this.imagen.src = rutaImagen;
+
+        this.imagenAsustado = new Image();
+        this.imagenAsustado.src = 'assets/svg/asustado.svg';
+
     }
 
-    dibujar(ctx, tamañoCelda) {
+    dibujar(ctx, tamañoCelda, modoFantasma) {
 
-        ctx.drawImage(this.imagen, this.posicionX * tamañoCelda, this.posicionY * tamañoCelda, tamañoCelda, tamañoCelda);
+        if (modoFantasma == 'asustado') {
+            ctx.drawImage(this.imagenAsustado, this.posicionX * tamañoCelda, this.posicionY * tamañoCelda, tamañoCelda, tamañoCelda);
+
+        } else {
+            ctx.drawImage(this.imagen, this.posicionX * tamañoCelda, this.posicionY * tamañoCelda, tamañoCelda, tamañoCelda);
+        }
     }
 
     mover(mapa, pacman, blinky, modoFantasma) {

@@ -92,7 +92,7 @@ function dibujarMapa() {
                 ctx.beginPath();
                 const radio = 2.5;
                 ctx.arc(centroX, centroY, radio, anguloInicio, anguloFin);
-                ctx.fillStyle = '#ffff00';
+                ctx.fillStyle = '#FFB7AE';
                 ctx.fill();
                 ctx.closePath();
             } else if (tipo == 2) {
@@ -100,7 +100,7 @@ function dibujarMapa() {
                     ctx.beginPath();
                     const radio = 4;
                     ctx.arc(centroX, centroY, radio, anguloInicio, anguloFin);
-                    ctx.fillStyle = '#ffff00';
+                    ctx.fillStyle = '#FFB7AE';
                     ctx.fill();
                     ctx.closePath();
                 }
@@ -174,19 +174,19 @@ function animar(timestamp) {
 
         //Fantasma blinky
         blinky.mover(mapa, pacman, null, modoFantasmas);
-        blinky.dibujar(ctx, tamañoCelda);
+        blinky.dibujar(ctx, tamañoCelda, modoFantasmas);
 
         //Fantasma pinky
         pinky.mover(mapa, pacman, null, modoFantasmas);
-        pinky.dibujar(ctx, tamañoCelda);
+        pinky.dibujar(ctx, tamañoCelda, modoFantasmas);
 
         //Fantasma clyde
         clyde.mover(mapa, pacman, null, modoFantasmas);
-        clyde.dibujar(ctx, tamañoCelda);
+        clyde.dibujar(ctx, tamañoCelda, modoFantasmas);
 
         //Fantasma inky
         inky.mover(mapa, pacman, blinky, modoFantasmas);
-        inky.dibujar(ctx, tamañoCelda);
+        inky.dibujar(ctx, tamañoCelda, modoFantasmas);
 
     }
 

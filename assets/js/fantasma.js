@@ -76,7 +76,7 @@ export class Fantasma {
             } else {
                 objetivo = this.obtenerObjetivo(pacman, blinky);
             }
-            this.decidirDireccion(mapa, objetivo);
+            this.decidirDireccion(mapa, objetivo, modoFantasma);
         }
 
 
@@ -115,9 +115,13 @@ export class Fantasma {
                 break;
         }
     }
-    decidirDireccion(mapa, objetivo) {
+    decidirDireccion(mapa, objetivo, modoFantasma) {
+
         const x = this.posicionX;
         const y = this.posicionY;
+
+        let mejorDireccion = this.direccionActual;
+        let menorDistancia = Infinity;
 
         const opciones = [
             { direccion: 'arriba', columnaDestino: x, filaDestino: y - 1 },
@@ -126,41 +130,53 @@ export class Fantasma {
             { direccion: 'derecha', columnaDestino: x + 1, filaDestino: y }
         ];
 
-        let mejorDireccion = this.direccionActual;
-        let menorDistancia = Infinity;
+        if (modoFantasma == 'asustado') {
 
-        opciones.forEach(opcion => {
-            if (opcion.direccion == this.direccionProhibida) return;
-            if (mapa[opcion.filaDestino][opcion.columnaDestino] == 1) return;
-            if ((mapa[opcion.filaDestino][opcion.columnaDestino] == 4) && y < 10) return;
+            let opcionesValidas = [];
 
-            const diferenciaX = opcion.columnaDestino - objetivo[1];
-            const diferenciaY = opcion.filaDestino - objetivo[0];
-
-            const distancia = diferenciaX * diferenciaX + diferenciaY * diferenciaY;
-
-            if (distancia < menorDistancia) {
-                menorDistancia = distancia;
-                mejorDireccion = opcion.direccion;
-            }
-
-        });
-
-        if (menorDistancia == Infinity) {
             opciones.forEach(opcion => {
+                if (opcion.direccion == this.direccionProhibida) return;
                 if (mapa[opcion.filaDestino][opcion.columnaDestino] == 1) return;
+                if ((mapa[opcion.filaDestino][opcion.columnaDestino] == 4) && y < 10) return;
+                opcionesValidas.push(opcion);
+            });
+
+            if (opcionesValidas.length > 0) {
+                mejorDireccion = opcionesValidas[Math.floor(Math.random() * opcionesValidas.length)].direccion;
+            }
+        } else {
+            opciones.forEach(opcion => {
+                if (opcion.direccion == this.direccionProhibida) return;
+                if (mapa[opcion.filaDestino][opcion.columnaDestino] == 1) return;
+                if ((mapa[opcion.filaDestino][opcion.columnaDestino] == 4) && y < 10) return;
 
                 const diferenciaX = opcion.columnaDestino - objetivo[1];
                 const diferenciaY = opcion.filaDestino - objetivo[0];
+
                 const distancia = diferenciaX * diferenciaX + diferenciaY * diferenciaY;
 
                 if (distancia < menorDistancia) {
                     menorDistancia = distancia;
                     mejorDireccion = opcion.direccion;
                 }
-            });
-        }
 
+            });
+
+            if (menorDistancia == Infinity) {
+                opciones.forEach(opcion => {
+                    if (mapa[opcion.filaDestino][opcion.columnaDestino] == 1) return;
+
+                    const diferenciaX = opcion.columnaDestino - objetivo[1];
+                    const diferenciaY = opcion.filaDestino - objetivo[0];
+                    const distancia = diferenciaX * diferenciaX + diferenciaY * diferenciaY;
+
+                    if (distancia < menorDistancia) {
+                        menorDistancia = distancia;
+                        mejorDireccion = opcion.direccion;
+                    }
+                });
+            }
+        }
 
         this.direccionActual = mejorDireccion;
 

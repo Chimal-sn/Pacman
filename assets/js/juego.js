@@ -131,18 +131,29 @@ const intervaloFps = 1000 / fpsObjetivo;
 
 
 let modoFantasmas = 'dispersar';
+let modoFantasmaAnterior = '';
+let asustadoTime = 0;
 let contadorModo = 0;
 
 setInterval(() => {
-    contadorModo++;
-    if (modoFantasmas == 'dispersar' && contadorModo == 7) {
-        modoFantasmas = 'caza';
-        contadorModo = 0;
+    if (modoFantasmas == 'asustado') {
+        asustadoTime++;
+        if (asustadoTime == 7) {
+            modoFantasmas = modoFantasmaAnterior;
+            asustadoTime = 0;
+        }
+    } else {
+        contadorModo++;
+        if (modoFantasmas == 'dispersar' && contadorModo == 7) {
+            modoFantasmas = 'caza';
+            contadorModo = 0;
+        }
+        if (modoFantasmas == 'caza' && contadorModo == 15) {
+            modoFantasmas = 'dispersar';
+            contadorModo = 0;
+        }
     }
-    if (modoFantasmas == 'caza' && contadorModo == 15) {
-        modoFantasmas = 'dispersar';
-        contadorModo = 0;
-    }
+
 }, 1000);
 
 
@@ -166,6 +177,16 @@ function animar(timestamp) {
             blink = !blink;
             contadorFotogramas = 0;
         }
+
+        if (pacman.pastillaGrande) {
+            asustadoTime = 0;
+            if (modoFantasmas != 'asustado') {
+                modoFantasmaAnterior = modoFantasmas;
+            }
+            modoFantasmas = 'asustado';
+            pacman.pastillaGrande = false;
+
+        }
         dibujarMapa();
 
         //Pacman
@@ -187,6 +208,8 @@ function animar(timestamp) {
         //Fantasma inky
         inky.mover(mapa, pacman, blinky, modoFantasmas);
         inky.dibujar(ctx, tamañoCelda, modoFantasmas);
+
+        console.log(modoFantasmas);
 
     }
 

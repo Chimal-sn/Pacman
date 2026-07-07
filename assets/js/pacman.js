@@ -11,6 +11,8 @@ export const pacman = {
     velocidad: 0.1,
     puntaje: 0,
     anguloBoca: 0,
+    pastillaGrande: false,
+    vidas: 3,
 
     dibujar: function (ctx, blink, tamañoCelda) {
         if (blink) {
@@ -125,6 +127,7 @@ export const pacman = {
                 mapa[fila][columna] = 3;
                 this.puntaje += 50;
                 marcador.textContent = "Puntaje: " + this.puntaje;
+                this.pastillaGrande = true;
                 break;
         }
     }

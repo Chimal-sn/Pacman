@@ -28,8 +28,8 @@ const mapaOriginal = [
 
 let mapa = mapaOriginal.map(fila => [...fila]);
 
-//1 = muro
 //0 = pastilla chica
+//1 = muro
 //2 = pastilal grande
 //3 = Espacio libre
 //4 = Entrada a la casa
@@ -40,13 +40,11 @@ const tamañoCelda = 24;
 const numeroFilas = mapa.length;
 const numeroColumnas = mapa[0].length;
 const tamañoPared = 22;
-
+let colorPared = '#0e0e96';
 canvas.width = numeroColumnas * tamañoCelda;
 canvas.height = numeroFilas * tamañoCelda;
-
 let blink = true;
 let contadorFotogramas = 0;
-
 const marcador = document.getElementById('marcador');
 
 function dibujarMapa() {
@@ -66,7 +64,7 @@ function dibujarMapa() {
             if (tipo == 1) {
                 const grosor = 10;
                 ctx.beginPath();
-                ctx.fillStyle = '#0e0e96';
+                ctx.fillStyle = colorPared;
 
                 // Dibujar el bloque del centro de la celda
                 ctx.fillRect(centroX - grosor / 2, centroY - grosor / 2, grosor, grosor);
@@ -128,19 +126,18 @@ function dibujarMapa() {
 let ultimoTiempo = 0;
 const fpsObjetivo = 60;
 const intervaloFps = 1000 / fpsObjetivo;
-
-
 let modoFantasmas = 'dispersar';
 let modoFantasmaAnterior = '';
 let asustadoTime = 0;
 let contadorModo = 0;
 let estadoJuego = 'jugando';
 let contadorMuerte = 0;
+let contadorVictoria = 0;
 
 setInterval(() => {
     if (modoFantasmas == 'asustado') {
         asustadoTime++;
-        if (asustadoTime == 7) {
+        if (asustadoTime == 5) {
             modoFantasmas = modoFantasmaAnterior;
             asustadoTime = 0;
         }
@@ -158,7 +155,6 @@ setInterval(() => {
 
 }, 1000);
 
-
 //Fantasma blinky
 const blinky = new Blinky(8, 10, 0.08, 0);
 //Fantasma pinky
@@ -168,6 +164,16 @@ const clyde = new Clyde(8, 10, 0.08, 360);
 //Fantasma inky
 const inky = new Inky(8, 10, 0.08, 540);
 
+function verificarVictoria() {
+    for (let fila = 0; fila < numeroFilas; fila++) {
+        for (let columna = 0; columna < numeroColumnas; columna++) {
+            if (mapa[fila][columna] == 2 || mapa[fila][columna] == 0) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 function reiniciarPosiciones() {
     pacman.posicionX = 9;
@@ -274,6 +280,13 @@ function animar(timestamp) {
 
             verificarColisiones();
 
+            if (verificarVictoria()) {
+                estadoJuego = 'victoria';
+                contadorVictoria = 0;
+                pacman.direccionActual = '';
+                pacman.direccionSiguiente = '';
+            }
+
         } else if (estadoJuego == 'muriendo') {
             contadorMuerte++;
             dibujarMapa();
@@ -305,6 +318,33 @@ function animar(timestamp) {
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+        } else if (estadoJuego == 'victoria') {
+
+            if (Math.floor(contadorVictoria / 15) % 2 == 0) {
+                colorPared = '#fff';
+            } else {
+                colorPared = '#0e0e96';
+            }
+
+            dibujarMapa();
+            pacman.dibujar(ctx, blink, tamañoCelda);
+
+            pinky.dibujar(ctx, tamañoCelda, modoFantasmas);
+            clyde.dibujar(ctx, tamañoCelda, modoFantasmas);
+            inky.dibujar(ctx, tamañoCelda, modoFantasmas);
+            blinky.dibujar(ctx, tamañoCelda, modoFantasmas);
+
+            contadorVictoria++;
+
+            if (contadorVictoria >= 50 && contadorVictoria < 200) {
+                ctx.font = '24px "prstar2p"';
+                ctx.fillStyle = 'yellow';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('YOU WIN!', canvas.width / 2, canvas.height / 2);
+            } else if (contadorVictoria == 200) {
+                reiniciarJuego();
+            }
         }
     }
 }
@@ -333,7 +373,6 @@ window.addEventListener('keydown', (evento) => {
 })
 
 //Detectar touch en los celulares
-
 let touchStartX = 0;
 let touchStartY = 0;
 

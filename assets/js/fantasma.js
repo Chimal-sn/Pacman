@@ -55,9 +55,7 @@ export class Fantasma {
             this.posicionY = Math.round(this.posicionY);
         }
 
-
         if (this.posicionX % 1 == 0 && this.posicionY % 1 == 0) {
-
 
             let objetivo = [];
 

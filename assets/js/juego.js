@@ -166,6 +166,33 @@ const clyde = new Clyde(8, 10, 0.08, 360);
 //Fantasma inky
 const inky = new Inky(8, 10, 0.08, 540);
 
+
+function reiniciarPosiciones() {
+    pacman.posicionX = 9;
+    pacman.posicionY = 16;
+
+    const fantasmas = [blinky, pinky, clyde, inky];
+
+    fantasmas.forEach(fantasma => {
+        fantasma.posicionX = 8;
+        fantasma.posicionY = 10;
+        fantasma.direccionActual = 'izquierda';
+        fantasma.direccionProhibida = '';
+        fantasma.muerto = false;
+        fantasma.velocidad = fantasma.velocidadOriginal;
+    });
+
+    blinky.retrasoSalida = 0;
+    pinky.retrasoSalida = 180;
+    clyde.retrasoSalida = 360;
+    inky.retrasoSalida = 540;
+
+    modoFantasmas = 'dispersar';
+    modoFantasmaAnterior = '';
+    asustadoTime = 0;
+    contadorModo = 0;
+}
+
 function verificarColisiones() {
     const fantasmas = [blinky, pinky, clyde, inky];
 
@@ -181,6 +208,9 @@ function verificarColisiones() {
             } else {
                 if (pacman.vidas > 0) {
                     pacman.vidas--;
+                    pacman.direccionActual = '';
+                    pacman.direccionSiguiente = '';
+                    reiniciarPosiciones();
                 }
             }
         }

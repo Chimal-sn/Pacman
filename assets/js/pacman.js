@@ -4,8 +4,8 @@ const pacman_closed = new Image();
 pacman_closed.src = 'assets/svg/pacman_closed.svg';
 
 export const pacman = {
-    posicionX: 2,
-    posicionY: 1,
+    posicionX: 9,
+    posicionY: 16,
     direccionActual: '',
     direccionSiguiente: '',
     velocidad: 0.1,

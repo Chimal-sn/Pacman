@@ -34,6 +34,10 @@ let mapa = mapaOriginal.map(fila => [...fila]);
 //3 = Espacio libre
 //4 = Entrada a la casa
 
+
+const pacman_open = new Image();
+pacman_open.src = 'assets/svg/pacman_open.svg';
+
 const canvas = document.getElementById('canvas-juego');
 const ctx = canvas.getContext('2d');
 const tamañoCelda = 24;
@@ -46,6 +50,18 @@ canvas.height = numeroFilas * tamañoCelda;
 let blink = true;
 let contadorFotogramas = 0;
 const marcador = document.getElementById('marcador');
+const vidas = document.getElementById('vidas');
+
+function actualizarVidasHtml() {
+    vidas.textContent = '';
+    for (let i = 0; i < pacman.vidas; i++) {
+        const img = document.createElement('img');
+        img.src = 'assets/svg/pacman_open.svg';
+        img.width = tamañoCelda;
+        img.height = tamañoCelda;
+        vidas.appendChild(img);
+    }
+}
 
 function dibujarMapa() {
     ctx.fillStyle = '#000';
@@ -212,6 +228,7 @@ function reiniciarJuego() {
     pacman.puntaje = 0;
     pacman.vidas = 3;
     marcador.textContent = 'Puntaje 0';
+    actualizarVidasHtml();
 }
 
 function verificarColisiones() {
@@ -304,7 +321,7 @@ function animar(timestamp) {
             } else if (contadorMuerte >= 130) {
                 if (pacman.vidas > 0) {
                     pacman.vidas--;
-                    console.log(pacman.vidas)
+                    actualizarVidasHtml();
                     reiniciarPosiciones();
                     estadoJuego = 'jugando';
                 } else {
@@ -343,13 +360,18 @@ function animar(timestamp) {
                 ctx.textBaseline = 'middle';
                 ctx.fillText('YOU WIN!', canvas.width / 2, canvas.height / 2);
             } else if (contadorVictoria == 200) {
-                reiniciarJuego();
+                mapa = mapaOriginal.map(fila => [...fila]);
+                colorPared = '#0e0e96';
+                estadoJuego = 'jugando';
+                reiniciarPosiciones();
+
             }
         }
     }
 }
 
 animar();
+actualizarVidasHtml();
 
 //Detectar movimiento del teclado
 window.addEventListener('keydown', (evento) => {

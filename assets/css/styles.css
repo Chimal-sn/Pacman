@@ -41,6 +41,20 @@ body {
         font-size: 1.5rem;
     }
 
+    #vidas {
+        display: flex;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: #fff;
+        font-family: 'prstar2p';
+        font-size: 1.5rem;
+
+        img {
+            width: 30px;
+        }
+    }
+
     a {
         text-decoration: none;
         color: #fff;

@@ -2,6 +2,12 @@ const pacman_open = new Image();
 pacman_open.src = 'assets/svg/pacman_open.svg';
 const pacman_closed = new Image();
 pacman_closed.src = 'assets/svg/pacman_closed.svg';
+const imagenesMuerte = [];
+for (let i = 1; i <= 9; i++) {
+    const img = new Image();
+    img.src = `assets/svg/pacman_die${i}.svg`;
+    imagenesMuerte.push(img);
+}
 
 export const pacman = {
     posicionX: 9,
@@ -28,6 +34,14 @@ export const pacman = {
             ctx.drawImage(pacman_closed, -tamañoCelda / 2, -tamañoCelda / 2, tamañoCelda, tamañoCelda);
             ctx.restore();
         }
+    },
+
+    dibujarMuerte: function (ctx, frame, tamañoCelda) {
+        ctx.save();
+        ctx.translate(this.posicionX * tamañoCelda + tamañoCelda / 2, this.posicionY * tamañoCelda + tamañoCelda / 2);
+        ctx.rotate(this.anguloBoca);
+        ctx.drawImage(imagenesMuerte[frame], -tamañoCelda / 2, -tamañoCelda / 2, tamañoCelda, tamañoCelda);
+        ctx.restore();
     },
 
     mover: function (mapa, marcador) {

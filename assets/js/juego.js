@@ -1,7 +1,7 @@
 import { pacman } from "./pacman.js";
 import { Blinky, Pinky, Clyde, Inky } from "./fantasma.js";
 
-const mapa = [
+const mapaOriginal = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 2, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2, 1],
     [1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
@@ -26,7 +26,7 @@ const mapa = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ];
 
-
+let mapa = mapaOriginal.map(fila => [...fila]);
 
 //1 = muro
 //0 = pastilla chica
@@ -134,6 +134,8 @@ let modoFantasmas = 'dispersar';
 let modoFantasmaAnterior = '';
 let asustadoTime = 0;
 let contadorModo = 0;
+let estadoJuego = 'jugando';
+let contadorMuerte = 0;
 
 setInterval(() => {
     if (modoFantasmas == 'asustado') {
@@ -170,6 +172,8 @@ const inky = new Inky(8, 10, 0.08, 540);
 function reiniciarPosiciones() {
     pacman.posicionX = 9;
     pacman.posicionY = 16;
+    pacman.direccionActual = '';
+    pacman.direccionSiguiente = '';
 
     const fantasmas = [blinky, pinky, clyde, inky];
 
@@ -191,6 +195,17 @@ function reiniciarPosiciones() {
     modoFantasmaAnterior = '';
     asustadoTime = 0;
     contadorModo = 0;
+    contadorMuerte = 0;
+    contadorFotogramas = 0;
+}
+
+function reiniciarJuego() {
+    mapa = mapaOriginal.map(fila => [...fila]);
+    reiniciarPosiciones();
+    estadoJuego = 'jugando';
+    pacman.puntaje = 0;
+    pacman.vidas = 3;
+    marcador.textContent = 'Puntaje 0';
 }
 
 function verificarColisiones() {
@@ -206,12 +221,7 @@ function verificarColisiones() {
             if (modoFantasmas == 'asustado') {
                 fantasma.muerto = true;
             } else {
-                if (pacman.vidas > 0) {
-                    pacman.vidas--;
-                    pacman.direccionActual = '';
-                    pacman.direccionSiguiente = '';
-                    reiniciarPosiciones();
-                }
+                estadoJuego = 'muriendo';
             }
         }
     }
@@ -219,56 +229,95 @@ function verificarColisiones() {
 
 function animar(timestamp) {
     requestAnimationFrame(animar);
-    verificarColisiones();
     if (!timestamp) timestamp = performance.now();
     const tiempoTranscurrido = timestamp - ultimoTiempo;
     if (tiempoTranscurrido >= intervaloFps) {
         ultimoTiempo = timestamp - (tiempoTranscurrido % intervaloFps);
         contadorFotogramas += 1;
-        if (contadorFotogramas == 20) {
-            blink = !blink;
-            contadorFotogramas = 0;
-        }
 
-        if (pacman.pastillaGrande) {
-            asustadoTime = 0;
-            if (modoFantasmas != 'asustado') {
-                modoFantasmaAnterior = modoFantasmas;
+        if (estadoJuego == 'jugando') {
+            if (contadorFotogramas == 20) {
+                blink = !blink;
+                contadorFotogramas = 0;
             }
-            modoFantasmas = 'asustado';
-            pacman.pastillaGrande = false;
 
+            if (pacman.pastillaGrande) {
+                asustadoTime = 0;
+                if (modoFantasmas != 'asustado') {
+                    modoFantasmaAnterior = modoFantasmas;
+                }
+                modoFantasmas = 'asustado';
+                pacman.pastillaGrande = false;
+
+            }
+            dibujarMapa();
+
+            //Pacman
+            pacman.mover(mapa, marcador);
+            pacman.dibujar(ctx, blink, tamañoCelda);
+
+            //Fantasma blinky
+            blinky.mover(mapa, pacman, null, modoFantasmas);
+            blinky.dibujar(ctx, tamañoCelda, modoFantasmas);
+
+            //Fantasma pinky
+            pinky.mover(mapa, pacman, null, modoFantasmas);
+            pinky.dibujar(ctx, tamañoCelda, modoFantasmas);
+
+            //Fantasma clyde
+            clyde.mover(mapa, pacman, null, modoFantasmas);
+            clyde.dibujar(ctx, tamañoCelda, modoFantasmas);
+
+            //Fantasma inky
+            inky.mover(mapa, pacman, blinky, modoFantasmas);
+            inky.dibujar(ctx, tamañoCelda, modoFantasmas);
+
+            verificarColisiones();
+
+        } else if (estadoJuego == 'muriendo') {
+            contadorMuerte++;
+            dibujarMapa();
+
+            if (contadorMuerte < 40) {
+                pacman.dibujar(ctx, blink, tamañoCelda);
+                blinky.dibujar(ctx, tamañoCelda, modoFantasmas);
+                pinky.dibujar(ctx, tamañoCelda, modoFantasmas);
+                clyde.dibujar(ctx, tamañoCelda, modoFantasmas);
+                inky.dibujar(ctx, tamañoCelda, modoFantasmas);
+
+            } else if (contadorMuerte >= 40 && contadorMuerte < 130) {
+                let frameMuerte = Math.floor((contadorMuerte - 40) / 10);
+                pacman.dibujarMuerte(ctx, frameMuerte, tamañoCelda);
+            } else if (contadorMuerte >= 130) {
+                if (pacman.vidas > 0) {
+                    pacman.vidas--;
+                    console.log(pacman.vidas)
+                    reiniciarPosiciones();
+                    estadoJuego = 'jugando';
+                } else {
+                    estadoJuego = 'gameOver';
+                }
+            }
+        } else if (estadoJuego == 'gameOver') {
+            dibujarMapa();
+            ctx.font = '24px "prstar2p"';
+            ctx.fillStyle = 'red';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
         }
-        dibujarMapa();
-
-        //Pacman
-        pacman.mover(mapa, marcador);
-        pacman.dibujar(ctx, blink, tamañoCelda);
-
-        //Fantasma blinky
-        blinky.mover(mapa, pacman, null, modoFantasmas);
-        blinky.dibujar(ctx, tamañoCelda, modoFantasmas);
-
-        //Fantasma pinky
-        pinky.mover(mapa, pacman, null, modoFantasmas);
-        pinky.dibujar(ctx, tamañoCelda, modoFantasmas);
-
-        //Fantasma clyde
-        clyde.mover(mapa, pacman, null, modoFantasmas);
-        clyde.dibujar(ctx, tamañoCelda, modoFantasmas);
-
-        //Fantasma inky
-        inky.mover(mapa, pacman, blinky, modoFantasmas);
-        inky.dibujar(ctx, tamañoCelda, modoFantasmas);
-
     }
-
 }
 
 animar();
 
 //Detectar movimiento del teclado
 window.addEventListener('keydown', (evento) => {
+
+    if (estadoJuego == 'gameOver') {
+        reiniciarJuego();
+        return;
+    }
     if (evento.key === 'ArrowUp' || evento.key === 'W' || evento.key === 'w') {
         pacman.direccionSiguiente = 'arriba';
     }
@@ -296,6 +345,11 @@ window.addEventListener('touchstart', (evento) => {
 
 window.addEventListener('touchend', (evento) => {
     evento.preventDefault();
+
+    if (estadoJuego == 'gameOver') {
+        reiniciarJuego();
+        return;
+    }
 
     const touchEndX = evento.changedTouches[0].clientX;
     const touchEndY = evento.changedTouches[0].clientY;
